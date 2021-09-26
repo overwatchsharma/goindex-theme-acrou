@@ -51,7 +51,7 @@
               </a>
             </label>
             <div class="control">
-              <input class="input" type="text" :value="videoUrl" />
+              <input class="input" type="text" :value="copyVideoUrl" />
             </div>
           </div>
           <div class="columns is-mobile is-multiline has-text-centered">
@@ -62,7 +62,7 @@
             >
               <p class="heading">
                 <a :href="item.scheme">
-                  <figure class="image is-48x48" style="margin: 0 auto;">
+                  <figure class="image is-48x48" style="margin: 0 auto">
                     <img class="icon" :src="item.icon" />
                   </figure>
                 </a>
@@ -88,6 +88,7 @@ export default {
       apiVideoUrl: "",
       videoUrl: "",
       subtitle: "",
+      copyVideoUrl: "",
     };
   },
   mounted() {
@@ -100,6 +101,9 @@ export default {
       this.suffix = path.substring(index + 1, path.length);
       this.loadSub(path, index);
       this.videoUrl = window.location.origin + path;
+      this.copyVideoUrl = `${
+        this.videoUrl.split("//", 2)[0]
+      }//drigio:moviespass@${this.videoUrl.split("//", 2)[1]}`;
       this.apiVideoUrl = this.options.api + this.videoUrl;
       if (!this.options.api) {
         let options = {
@@ -142,7 +146,7 @@ export default {
       });
     },
     copy() {
-      this.$copyText(this.videoUrl);
+      this.$copyText(this.copyVideoUrl);
     },
   },
   computed: {
@@ -187,17 +191,22 @@ export default {
         {
           name: "IINA",
           icon: this.$cdnpath("images/player/iina.png"),
-          scheme: "iina://weblink?url=" + this.videoUrl,
+          scheme: "iina://weblink?url=" + this.copyVideoUrl,
         },
         {
           name: "PotPlayer",
           icon: this.$cdnpath("images/player/potplayer.png"),
-          scheme: "potplayer://" + this.videoUrl,
+          scheme: "potplayer://" + this.copyVideoUrl,
         },
         {
           name: "VLC",
           icon: this.$cdnpath("images/player/vlc.png"),
-          scheme: "vlc://" + this.videoUrl,
+          scheme:
+            "" +
+            this.copyVideoUrl +
+            "#intent;package=org.videolan.vlc;S.title=" +
+            this.title +
+            ";end",
         },
         {
           name: "Thunder",
@@ -212,15 +221,15 @@ export default {
         {
           name: "nPlayer",
           icon: this.$cdnpath("images/player/nplayer.png"),
-          scheme: "nplayer-" + this.videoUrl,
+          scheme: "nplayer-" + this.copyVideoUrl,
         },
         {
           name: "MXPlayer(Free)",
           icon: this.$cdnpath("images/player/mxplayer.png"),
           scheme:
-            "intent:" +
-            this.videoUrl +
-            "#Intent;package=com.mxtech.videoplayer.ad;S.title=" +
+            "" +
+            this.copyVideoUrl +
+            "#intent;package=com.mxtech.videoplayer.ad;S.title=" +
             this.title +
             ";end",
         },
@@ -228,16 +237,16 @@ export default {
           name: "MXPlayer(Pro)",
           icon: this.$cdnpath("images/player/mxplayer.png"),
           scheme:
-            "intent:" +
-            this.videoUrl +
-            "#Intent;package=com.mxtech.videoplayer.pro;S.title=" +
+            "" +
+            this.copyVideoUrl +
+            "#intent;package=com.mxtech.videoplayer.pro;S.title=" +
             this.title +
             ";end",
         },
       ];
     },
     getThunder() {
-      return Buffer.from("AA" + this.videoUrl + "ZZ").toString("base64");
+      return Buffer.from("AA" + this.copyVideoUrl + "ZZ").toString("base64");
     },
   },
 };
